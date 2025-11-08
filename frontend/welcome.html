@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome - Dream Cricket Club</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .welcome-container {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 20px;
+    }
+
+    .welcome-container h1 {
+      font-size: 38px;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+    }
+
+    .welcome-container h2 {
+      font-size: 22px;
+      color: #00aaff;
+      margin-bottom: 30px;
+    }
+
+    .logout-btn {
+      background: #ff3333;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #cc0000;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-center"></div>
+
+  <div class="welcome-container">
+    <h1>✅ You have successfully logged in.</h1>
+    <h2>Welcome to Dream Cricket Club, Wardha, Maharashtra.</h2>
+    <button class="logout-btn" onclick="window.location.href='index.html'">Logout</button>
+  </div>
+</body>
+</html>
