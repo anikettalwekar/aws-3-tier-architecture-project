@@ -99,3 +99,16 @@ pipeline {
             }
         }
     }
+
+    /* ---------------------------------------------------
+       Post Actions
+    ---------------------------------------------------- */
+    post {
+        success {
+            echo "🎉 Pipeline completed successfully! Both images pushed to ECR."
+        }
+        failure {
+            echo "❌ Pipeline failed. Please check above logs."
+        }
+    }
+}
