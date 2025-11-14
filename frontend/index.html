@@ -2,62 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dream Cricket Club</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+  <!-- Background layout -->
   <div class="bg-center"></div>
 
   <div class="container">
-    <!-- LEFT: ABOUT SECTION -->
+    <!-- Left Section -->
     <div class="left">
-      <h2>About Our Club</h2>
-      <p>
-        Dream Cricket Club, established in 2024, is the vision of <strong>Aniket</strong>,
-        a passionate cricketer and true lover of the game. Built on dedication,
-        teamwork, and the spirit of sportsmanship, our club is a home for players
-        who dream big and play with heart.
-      </p>
-      <p>
-        From local matches to competitive tournaments, we aim to nurture raw
-        talent, promote fitness, and create a strong community of cricket enthusiasts.
-      </p>
-      <p>
-        At Dream Cricket Club, cricket is more than just a game — it’s our passion,
-        our pride, and our way of life.
-      </p>
+      <h2>About Our Club - Dream Cricket Club</h2>
+      <p>Dream Cricket Club, established in 2024, is the vision of <strong>Aniket</strong>, a passionate cricketer and true lover of the game. Built on dedication, teamwork, and the spirit of sportsmanship, our club is a home for players who dream big and play with heart.</p>
+      <p>From local matches to competitive tournaments, we aim to nurture raw talent, promote fitness, and create a strong community of cricket enthusiasts.</p>
+      <p><strong>Founder & Owner:</strong> Aniket<br>
+         <strong>Founded:</strong> 2024<br>
+         <strong>Motto:</strong> “Play with passion, win with pride.”</p>
     </div>
 
-    <!-- CENTER: REGISTER + LOGIN -->
+    <!-- Center Section -->
     <div class="center">
-      <h1>Welcome to Dream Cricket Club, Wardha, Maharashtra</h1>
-
-      <form id="registerForm">
-        <input type="text" id="name" placeholder="Name" required />
-        <input type="email" id="email" placeholder="Email" required />
-        <input type="password" id="password" placeholder="Password" required />
-        <button type="submit" class="btn-small">Register</button>
-        <div class="msg" id="registerMsg"></div>
-      </form>
-
-      <form id="loginForm">
-        <input type="email" id="loginEmail" placeholder="Email" required />
-        <input type="password" id="loginPassword" placeholder="Password" required />
-        <button type="submit" class="btn-small">Login</button>
-        <div class="msg" id="loginMsg"></div>
-      </form>
+      <h1>Welcome to Dream Cricket Club 🏏</h1>
     </div>
 
-    <!-- RIGHT: EXPLORE SECTION -->
+    <!-- Right Section -->
     <div class="right">
-      <h2>Explore Cricket</h2>
-      <ul class="explore-menu">
-        <li data-section="pictures">🏏 Cricketer Pictures</li>
-        <li data-section="legend">🌟 Legend Stories</li>
-        <li data-section="history">📖 Cricket History</li>
+      <ul class="menu">
+        <li onclick="showSection('history')">Cricket History</li>
+        <li onclick="showSection('photos')">Cricket Photos</li>
+        <li onclick="showSection('memories')">Cricket Memories</li>
+        <li onclick="showSection('legend')">Legend Stories</li>
+        <li onclick="showSection('register')">Register</li>
+        <li onclick="showSection('login')">Login</li>
       </ul>
-      <div id="info-content" class="info-box"></div>
+      <div id="content" style="margin-top: 15px;"></div>
     </div>
   </div>
 
