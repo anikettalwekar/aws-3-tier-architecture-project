@@ -1,105 +1,134 @@
-// ==================== REGISTER (updated) ====================
-document.getElementById("registerForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+// ------------------- Backend URL (proxied via Apache) -------------------
+const BACKEND_URL = "/api";
 
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+// ------------------- Dynamic Content Handling -------------------
+const contentDiv = document.getElementById('content');
 
-  const msgEl = document.getElementById("registerMsg");
-  msgEl.textContent = "";
+function showSection(section) {
 
-  if (!name || !email || !password) {
-    msgEl.style.color = "#ff4d4d";
-    msgEl.textContent = "⚠️ Please fill all fields";
-    return;
+  if (section === "history") {
+    contentDiv.innerHTML = `
+      <h3>Cricket History</h3>
+      <p>Cricket originated in England in the 16th century and grew into an international sport uniting nations worldwide. The first Test match was played between England and Australia in 1877. Today, it continues to inspire millions globally.</p>`;
   }
 
+  else if (section === "photos") {
+    let html = '<h3>Cricket Photos</h3><div class="gallery">';
+    const photos = ['c1.jpg','c2.jpg','c3.jpg','c4.jpg','c5.jpg','c6.jpg','c7.jpg','c8.jpg','c9.jpg','c10.jpg'];
+    photos.forEach(img => {
+      html += `<img src="images/${img}" alt="${img}" onclick="openModal('images/${img}')">`;
+    });
+    html += '</div>';
+    contentDiv.innerHTML = html;
+  }
+
+  else if (section === "memories") {
+    contentDiv.innerHTML = `
+      <h3>Cricket Memories</h3>
+      <p>Sachin’s 2011 World World Cup victory, Rohit Sharma’s double centuries, and Dhoni’s helicopter shot moments are unforgettable memories that define Indian cricket.</p>`;
+  }
+
+  else if (section === "legend") {
+    contentDiv.innerHTML = `
+      <h3>Legend Stories</h3>
+      <p>Rohit Sharma, the 'Hitman', is one of India's greatest batsmen, known for effortless strokeplay and multiple ODI double hundreds.</p>`;
+  }
+
+  else if (section === "register") {
+    contentDiv.innerHTML = `
+      <h3>Register</h3>
+      <form id="registerForm">
+        <input type="text" name="name" placeholder="Name" required><br>
+        <input type="email" name="email" placeholder="Email" required><br>
+        <input type="password" name="password" placeholder="Password" required><br>
+        <button type="submit">Register</button>
+        <div id="formMsg" class="msg"></div>
+      </form>`;
+    document.getElementById('registerForm').addEventListener('submit', handleRegister);
+  }
+
+  else if (section === "login") {
+    contentDiv.innerHTML = `
+      <h3>Login</h3>
+      <form id="loginForm">
+        <input type="email" name="email" placeholder="Email" required><br>
+        <input type="password" name="password" placeholder="Password" required><br>
+        <button type="submit">Login</button>
+        <div id="loginMsg" class="msg"></div>
+      </form>`;
+    document.getElementById('loginForm').addEventListener('submit', handleLogin);
+  }
+}
+
+// ------------------- Modal for Image Preview -------------------
+function openModal(src) {
+  const m = document.createElement('div');
+  m.className = 'modal';
+  m.innerHTML = `<img src='${src}' alt='${src}' />`;
+  m.onclick = () => document.body.removeChild(m);
+  document.body.appendChild(m);
+}
+
+// ------------------- REGISTER USER -------------------
+async function handleRegister(e) {
+  e.preventDefault();
+  const form = e.target;
+  const msg = document.getElementById('formMsg');
+
+  const payload = {
+    name: form.name.value,
+    email: form.email.value,
+    password: form.password.value
+  };
+
   try {
-    const res = await fetch("/api/register", {
+    const res = await fetch(`${BACKEND_URL}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify(payload)
     });
 
     const data = await res.json();
-    console.log("Register response:", data);
-
-    if (data.success === true) {
-      msgEl.style.color = "#32cd32"; // green
-      msgEl.textContent = "✅ Registered successfully!";
-      e.target.reset(); // clear fields
-    } else {
-      msgEl.style.color = "#ff4d4d"; // red
-      msgEl.textContent = "❌ " + (data.message || "Registration failed");
-    }
+    msg.textContent = data.message || "Registered successfully!";
+    msg.style.color = "limegreen";
   } catch (err) {
-    console.error("Register error:", err);
-    msgEl.style.color = "#ff4d4d";
-    msgEl.textContent = "❌ Server unreachable";
+    msg.textContent = "Error: " + err.message;
+    msg.style.color = "red";
   }
-});
+}
 
-// ==================== LOGIN (redirect + popup) ====================
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
+// ------------------- LOGIN USER -------------------
+async function handleLogin(e) {
   e.preventDefault();
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
+  const form = e.target;
+  const msg = document.getElementById('loginMsg');
+
+  const payload = {
+    email: form.email.value,
+    password: form.password.value
+  };
 
   try {
-    const res = await fetch("/api/login", {
+    const res = await fetch(`${BACKEND_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify(payload)
     });
 
     const data = await res.json();
-    console.log("Login response:", data);
 
-    if (data.success === true) {
-      // Redirect to welcome.html page
+    if (res.ok) {
+      // SUCCESS → Redirect to welcome page
       window.location.href = "welcome.html";
     } else {
-      document.getElementById("loginMsg").style.color = "#ff4d4d";
-      document.getElementById("loginMsg").textContent =
-        "❌ " + (data.message || "Invalid credentials");
+      msg.textContent = data.message || "Invalid credentials";
+      msg.style.color = "red";
     }
   } catch (err) {
-    console.error("Login error:", err);
-    document.getElementById("loginMsg").style.color = "#ff4d4d";
-    document.getElementById("loginMsg").textContent = "❌ Server unreachable";
+    msg.textContent = "Error: " + err.message;
+    msg.style.color = "red";
   }
-});
+}
 
-// ==================== EXPLORE SECTION ====================
-const infoBox = document.getElementById("info-content");
-
-document.querySelectorAll(".explore-menu li").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const section = btn.getAttribute("data-section");
-
-    if (section === "pictures") {
-      infoBox.innerHTML = "";
-      for (let i = 1; i <= 10; i++) {
-        const img = document.createElement("img");
-        img.src = `images/c${i}.jpg`;
-        img.alt = `Cricketer ${i}`;
-        infoBox.appendChild(img);
-      }
-    } else if (section === "legend") {
-      infoBox.innerHTML = `
-        <h3>Rohit Sharma — The Legend</h3>
-        <p>Rohit Sharma, one of the greatest modern-day cricketing icons, has carved an extraordinary legacy built on consistency, calm leadership, and unmatched batting brilliance.</p>
-        <p>Known as the “Hitman,” he’s the only cricketer with three ODI double centuries and led India to the 2024 T20 World Cup and 2025 Champions Trophy victories.</p>
-        <p>Under his leadership, India became the No.1 ODI team in 2025, and Rohit retired as one of cricket’s most respected and complete leaders.</p>
-      `;
-    } else if (section === "history") {
-      infoBox.innerHTML = `
-        <h3>The History of Cricket</h3>
-        <p>Cricket originated in England during the 16th century and gradually evolved from a rural pastime into an international sport.</p>
-        <p>The first official Test match was played between England and Australia in 1877, marking the beginning of international cricket.</p>
-        <p>Over time, cricket spread worldwide, leading to iconic tournaments like the ICC World Cup and T20 World Cup that unite billions of fans.</p>
-      `;
-    }
-  });
-});
+// Show default page content
+showSection('history');
