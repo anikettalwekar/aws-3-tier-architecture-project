@@ -1,96 +1,86 @@
-// ------------------------------
-// Dream Cricket Club Backend API
-// ------------------------------
-
 const express = require("express");
-const bodyParser = require("body-parser");
 const mysql = require("mysql2");
+const bodyParser = require("body-parser");
 const cors = require("cors");
+const bcrypt = require("bcryptjs");
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// ✅ RDS Database connection
+// --------------------------------------
+// RDS MySQL Connection
+// --------------------------------------
 const db = mysql.createConnection({
-  host: "aws3tier-db.c9qu6gs06l19.ap-south-1.rds.amazonaws.com",
+  host: "aws3tier-db.c9qu6gs06l19.ap-south-1.rds.amazonaws.com",    // REPLACE
   user: "admin",
-  password: "admin123",
+  password: "admin123",    // REPLACE
   database: "aws3tierdb"
 });
 
-// ✅ Test DB connection
-db.connect(err => {
+// Connect & log status
+db.connect((err) => {
   if (err) {
     console.error("❌ DB connection failed:", err);
-    return;
+  } else {
+    console.log("✅ Connected to RDS MySQL");
   }
-  console.log("✅ Connected to RDS MySQL");
 });
 
-// ---------- HEALTH CHECK ----------
-app.get("/health", (req, res) => res.send("OK"));
+// --------------------------------------
+// Health Check
+// --------------------------------------
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 
-// ---------- REGISTER ----------
+// --------------------------------------
+// REGISTER USER
+// --------------------------------------
 app.post("/register", (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password)
-    return res
-      .status(400)
-      .json({ success: false, message: "All fields required" });
+    return res.status(400).json({ message: "All fields are required" });
 
-  const sql = "INSERT INTO users (name,email,password) VALUES (?,?,?)";
-  db.query(sql, [name, email, password], err => {
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
+  const sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+  db.query(sql, [name, email, hashedPassword], (err) => {
     if (err) {
-      console.error("DB Error during registration:", err);
-      return res
-        .status(500)
-        .json({ success: false, message: "DB Error - Unable to register" });
+      console.error("DB Error:", err);
+      return res.status(500).json({ message: "DB Error" });
     }
-
-    console.log(`✅ Registered user: ${email}`);
-    return res.json({
-      success: true,
-      message: "Registered successfully!"
-    });
+    res.json({ message: "Registered successfully!" });
   });
 });
 
-// ---------- LOGIN ----------
+// --------------------------------------
+// LOGIN USER
+// --------------------------------------
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password)
-    return res
-      .status(400)
-      .json({ success: false, message: "Email and password required" });
+  const sql = "SELECT * FROM users WHERE email = ?";
+  db.query(sql, [email], (err, results) => {
+    if (err) return res.status(500).json({ message: "DB Error" });
+    if (results.length === 0)
+      return res.status(401).json({ message: "Invalid email or password" });
 
-  const sql = "SELECT * FROM users WHERE email=? AND password=?";
-  db.query(sql, [email, password], (err, result) => {
-    if (err) {
-      console.error("DB Error during login:", err);
-      return res.status(500).json({ success: false, message: "DB Error" });
-    }
+    const user = results[0];
 
-    if (result.length === 0) {
-      console.warn(`❌ Invalid login attempt for email: ${email}`);
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid credentials" });
-    }
+    const isMatch = bcrypt.compareSync(password, user.password);
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid email or password" });
 
-    console.log(`✅ ${email} logged in successfully`);
-    return res.json({
-      success: true,
-      message: "Login successful",
-      name: result[0].name
-    });
+    res.json({ message: "Login successful!" });
   });
 });
 
-// ---------- START SERVER ----------
+// --------------------------------------
+// START SERVER
+// --------------------------------------
 const PORT = 3000;
-app.listen(PORT, "0.0.0.0", () =>
-  console.log(`🚀 Backend running and listening on port ${PORT}`)
-);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Backend running on port ${PORT}`);
+});
