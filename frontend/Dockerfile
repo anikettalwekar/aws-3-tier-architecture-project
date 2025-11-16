@@ -1,3 +1,12 @@
 FROM nginx:latest
-COPY . /usr/share/nginx/html
+
+# Set working directory
+WORKDIR /usr/share/nginx/html
+
+# Copy all frontend files
+COPY . .
+
+# Optional: list files (debug)
+RUN ls -R /usr/share/nginx/html
+
 EXPOSE 80
