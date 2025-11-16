@@ -12,9 +12,9 @@ app.use(bodyParser.json());
 // RDS MySQL Connection
 // --------------------------------------
 const db = mysql.createConnection({
-  host: "aws3tier-db.c9qu6gs06l19.ap-south-1.rds.amazonaws.com",    // REPLACE
+  host: "aws3tier-db.c9qu6gs06l19.ap-south-1.rds.amazonaws.com", // REPLACE
   user: "admin",
-  password: "admin123",    // REPLACE
+  password: "admin123", // REPLACE
   database: "aws3tierdb"
 });
 
@@ -64,12 +64,13 @@ app.post("/login", (req, res) => {
   const sql = "SELECT * FROM users WHERE email = ?";
   db.query(sql, [email], (err, results) => {
     if (err) return res.status(500).json({ message: "DB Error" });
+
     if (results.length === 0)
       return res.status(401).json({ message: "Invalid email or password" });
 
     const user = results[0];
-
     const isMatch = bcrypt.compareSync(password, user.password);
+
     if (!isMatch)
       return res.status(401).json({ message: "Invalid email or password" });
 
@@ -82,5 +83,5 @@ app.post("/login", (req, res) => {
 // --------------------------------------
 const PORT = 3000;
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Backend running on port ${PORT}`);
+  console.log(`🚀 Backend running on port ${PORT}`);
 });
