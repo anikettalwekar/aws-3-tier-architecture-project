@@ -16,7 +16,6 @@ const db = mysql.createConnection({
   user: "admin",
   password: "admin123", // REPLACE
   database: "projectdb"
-"
 });
 
 // Connect & log status
