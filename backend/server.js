@@ -12,10 +12,11 @@ app.use(bodyParser.json());
 // RDS MySQL Connection
 // --------------------------------------
 const db = mysql.createConnection({
-  host: "aws3tier-db.c9qu6gs06l19.ap-south-1.rds.amazonaws.com", // REPLACE
+  host: "project-mysql.c9qu6gs06l19.ap-south-1.rds.amazonaws.com", // REPLACE
   user: "admin",
   password: "admin123", // REPLACE
-  database: "aws3tierdb"
+  database: "projectdb
+"
 });
 
 // Connect & log status
