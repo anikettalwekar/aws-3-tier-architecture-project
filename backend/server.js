@@ -15,7 +15,7 @@ const db = mysql.createConnection({
   host: "project-mysql.c9qu6gs06l19.ap-south-1.rds.amazonaws.com", // REPLACE
   user: "admin",
   password: "admin123", // REPLACE
-  database: "projectdb
+  database: "projectdb"
 "
 });
 
