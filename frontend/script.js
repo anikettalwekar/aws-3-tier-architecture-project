@@ -1,5 +1,5 @@
 // ------------------- Backend URL (proxied via Apache) -------------------
-const BACKEND_URL = "/api";
+const BACKEND_URL = "http://a8e5466a7d9c348228b0cafa30fd52b0-247090190.ap-south-1.elb.amazonaws.com";
 
 // ------------------- Dynamic Content Handling -------------------
 const contentDiv = document.getElementById('content');
