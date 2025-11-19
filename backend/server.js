@@ -8,17 +8,17 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// --------------------------------------
-// RDS MySQL Connection
-// --------------------------------------
+// ------------------------------------------------
+// ✅ RDS MySQL Connection using Environment Variables
+// ------------------------------------------------
 const db = mysql.createConnection({
-  host: "project-mysql.c9qu6gs06l19.ap-south-1.rds.amazonaws.com", // REPLACE
-  user: "admin",
-  password: "admin123", // REPLACE
-  database: "projectdb"
+  host: process.env.DB_HOST,    // example: project-mysql.xxxxx.rds.amazonaws.com
+  user: process.env.DB_USER,    // admin
+  password: process.env.DB_PASS, // your DB password
+  database: process.env.DB_NAME // projectdb
 });
 
-// Connect & log status
+// Log DB connection status
 db.connect((err) => {
   if (err) {
     console.error("❌ DB connection failed:", err);
@@ -27,16 +27,16 @@ db.connect((err) => {
   }
 });
 
-// --------------------------------------
+// ------------------------------------------------
 // Health Check
-// --------------------------------------
+// ------------------------------------------------
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
 
-// --------------------------------------
+// ------------------------------------------------
 // REGISTER USER
-// --------------------------------------
+// ------------------------------------------------
 app.post("/register", (req, res) => {
   const { name, email, password } = req.body;
 
@@ -55,9 +55,9 @@ app.post("/register", (req, res) => {
   });
 });
 
-// --------------------------------------
+// ------------------------------------------------
 // LOGIN USER
-// --------------------------------------
+// ------------------------------------------------
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
@@ -78,9 +78,9 @@ app.post("/login", (req, res) => {
   });
 });
 
-// --------------------------------------
+// ------------------------------------------------
 // START SERVER
-// --------------------------------------
+// ------------------------------------------------
 const PORT = 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Backend running on port ${PORT}`);
